@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Trading Platform - Live Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover:hover { transform: translateY(-2px); transition: all 0.3s ease; }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .trading-signal {
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Header -->
+    <header class="gradient-bg shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-purple-600 font-bold text-xl">🚀</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">Advanced Trading Platform</h1>
+                        <p class="text-purple-200">AI-Powered Multi-Exchange Trading</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <div class="text-sm text-purple-200">Total P&L</div>
+                        <div class="text-xl font-bold text-green-300" id="total-pnl">$43,955.39</div>
+                    </div>
+                    <div class="w-3 h-3 bg-green-400 rounded-full pulse-dot"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <div class="container mx-auto px-6 py-8">
+        <!-- Status Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-gray-800 rounded-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Active Strategies</p>
+                        <p class="text-2xl font-bold text-blue-400" id="active-strategies">7</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                        <span class="text-xl">🧠</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 rounded-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Subscribers</p>
+                        <p class="text-2xl font-bold text-green-400" id="total-subscribers">505</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                        <span class="text-xl">👥</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 rounded-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Monthly Revenue</p>
+                        <p class="text-2xl font-bold text-purple-400" id="monthly-revenue">$62,758</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                        <span class="text-xl">💰</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 rounded-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-400 text-sm">Win Rate</p>
+                        <p class="text-2xl font-bold text-yellow-400" id="win-rate">81.2%</p>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+                        <span class="text-xl">🎯</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Strategy Marketplace -->
+            <div class="lg:col-span-2">
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold">🏪 Strategy Marketplace</h2>
+                        <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm">
+                            Browse All
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4" id="strategy-list">
+                        <!-- Strategies will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Trading Feed -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold">📡 Live Trading</h2>
+                    <div class="w-3 h-3 bg-green-400 rounded-full pulse-dot"></div>
+                </div>
+                
+                <div class="space-y-3" id="trading-feed">
+                    <!-- Trading signals will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h3 class="text-lg font-bold mb-4">📈 Portfolio Performance</h3>
+                <canvas id="performanceChart" width="400" height="200"></canvas>
+            </div>
+            
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h3 class="text-lg font-bold mb-4">⚠️ Risk Metrics</h3>
+                <canvas id="riskChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- AI/ML Status -->
+        <div class="bg-gray-800 rounded-lg p-6 mt-8">
+            <h2 class="text-xl font-bold mb-6">🤖 AI/ML Intelligence System</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-2xl">🧠</span>
+                    </div>
+                    <h3 class="font-bold">Sentiment Analysis</h3>
+                    <p class="text-green-400 text-2xl font-bold" id="sentiment-accuracy">86.1%</p>
+                    <p class="text-gray-400 text-sm">Accuracy</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-2xl">📊</span>
+                    </div>
+                    <h3 class="font-bold">Price Prediction</h3>
+                    <p class="text-blue-400 text-2xl font-bold" id="prediction-r2">0.803</p>
+                    <p class="text-gray-400 text-sm">R² Score</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-2xl">🔄</span>
+                    </div>
+                    <h3 class="font-bold">Model Updates</h3>
+                    <p class="text-yellow-400 text-2xl font-bold" id="update-frequency">9h</p>
+                    <p class="text-gray-400 text-sm">Frequency</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exchange Status -->
+        <div class="bg-gray-800 rounded-lg p-6 mt-8">
+            <h2 class="text-xl font-bold mb-6">🏦 Exchange Integrations</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="flex items-center space-x-4 p-4 bg-gray-700 rounded-lg">
+                    <div class="w-3 h-3 bg-green-400 rounded-full pulse-dot"></div>
+                    <div>
+                        <h3 class="font-bold">Binance</h3>
+                        <p class="text-gray-400 text-sm">Latency: 45ms</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4 p-4 bg-gray-700 rounded-lg">
+                    <div class="w-3 h-3 bg-green-400 rounded-full pulse-dot"></div>
+                    <div>
+                        <h3 class="font-bold">Coinbase Pro</h3>
+                        <p class="text-gray-400 text-sm">Latency: 52ms</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4 p-4 bg-gray-700 rounded-lg">
+                    <div class="w-3 h-3 bg-green-400 rounded-full pulse-dot"></div>
+                    <div>
+                        <h3 class="font-bold">Kraken</h3>
+                        <p class="text-gray-400 text-sm">Latency: 38ms</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const strategies = [
+            { name: "AI Momentum Master", creator: "AlgoTrader_Pro", return: 34.2, sharpe: 2.1, subscribers: 78, rating: 4.8 },
+            { name: "Cross-Exchange Arbitrage", creator: "ArbitrageKing", return: 18.5, sharpe: 3.2, subscribers: 156, rating: 4.4 },
+            { name: "DeFi Yield Optimizer", creator: "DeFi_Wizard", return: 45.8, sharpe: 1.8, subscribers: 92, rating: 4.7 },
+            { name: "Scalping Sniper", creator: "ScalpMaster", return: 67.3, sharpe: 2.5, subscribers: 45, rating: 4.6 },
+            { name: "Mean Reversion Pro", creator: "StatArb_Expert", return: 22.1, sharpe: 2.8, subscribers: 134, rating: 4.5 }
+        ];
+
+        const tradingSignals = [
+            { action: "BUY", pair: "BTC/USDT", size: "0.25 BTC", price: "$43,250", strategy: "AI Momentum" },
+            { action: "SELL", pair: "ETH/USDT", size: "3.5 ETH", price: "$2,340", strategy: "Mean Reversion" },
+            { action: "ARB", pair: "BNB/USDT", size: "15 BNB", price: "$315", strategy: "Cross-Exchange" },
+            { action: "STAKE", pair: "MATIC", size: "5000 MATIC", price: "$0.85", strategy: "DeFi Optimizer" }
+        ];
+
+        // Populate strategy marketplace
+        function populateStrategies() {
+            const strategyList = document.getElementById('strategy-list');
+            strategies.forEach(strategy => {
+                const strategyCard = document.createElement('div');
+                strategyCard.className = 'bg-gray-700 rounded-lg p-4 card-hover cursor-pointer';
+                strategyCard.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg">${strategy.name}</h3>
+                            <p class="text-gray-400 text-sm">by ${strategy.creator}</p>
+                            <div class="flex items-center space-x-4 mt-2">
+                                <span class="text-green-400 font-bold">${strategy.return}%</span>
+                                <span class="text-blue-400">Sharpe: ${strategy.sharpe}</span>
+                                <span class="text-yellow-400">★ ${strategy.rating}</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-purple-400 font-bold">${strategy.subscribers}</div>
+                            <div class="text-gray-400 text-sm">subscribers</div>
+                            <button class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm mt-2">
+                                Subscribe
+                            </button>
+                        </div>
+                    </div>
+                `;
+                strategyList.appendChild(strategyCard);
+            });
+        }
+
+        // Populate trading feed
+        function addTradingSignal(signal) {
+            const tradingFeed = document.getElementById('trading-feed');
+            const signalElement = document.createElement('div');
+            signalElement.className = 'bg-gray-700 rounded-lg p-3 trading-signal';
+            
+            const actionColor = signal.action === 'BUY' ? 'text-green-400' : 
+                               signal.action === 'SELL' ? 'text-red-400' : 'text-blue-400';
+            
+            signalElement.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="${actionColor} font-bold">${signal.action}</span>
+                        <span class="text-white ml-2">${signal.pair}</span>
+                    </div>
+                    <div class="text-right text-sm">
+                        <div>${signal.size}</div>
+                        <div class="text-gray-400">${signal.price}</div>
+                    </div>
+                </div>
+                <div class="text-gray-400 text-xs mt-1">${signal.strategy}</div>
+            `;
+            
+            tradingFeed.insertBefore(signalElement, tradingFeed.firstChild);
+            
+            // Remove old signals (keep only 8)
+            while (tradingFeed.children.length > 8) {
+                tradingFeed.removeChild(tradingFeed.lastChild);
+            }
+        }
+
+        // Simulate live trading
+        function simulateLiveTrading() {
+            let signalIndex = 0;
+            setInterval(() => {
+                const signal = tradingSignals[signalIndex % tradingSignals.length];
+                addTradingSignal(signal);
+                signalIndex++;
+            }, 3000);
+        }
+
+        // Create performance chart
+        function createPerformanceChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            const data = [];
+            let value = 10000;
+            
+            for (let i = 0; i < 30; i++) {
+                value += (Math.random() - 0.4) * 500;
+                data.push(value);
+            }
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 30}, (_, i) => `Day ${i + 1}`),
+                    datasets: [{
+                        label: 'Portfolio Value',
+                        data: data,
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: '#374151' },
+                            ticks: { color: '#9CA3AF' }
+                        },
+                        x: {
+                            grid: { color: '#374151' },
+                            ticks: { color: '#9CA3AF' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create risk chart
+        function createRiskChart() {
+            const ctx = document.getElementById('riskChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Low Risk', 'Medium Risk', 'High Risk'],
+                    datasets: [{
+                        data: [60, 30, 10],
+                        backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#9CA3AF' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update live metrics
+        function updateMetrics() {
+            setInterval(() => {
+                // Update P&L
+                const pnl = document.getElementById('total-pnl');
+                const currentValue = parseFloat(pnl.textContent.replace('$', '').replace(',', ''));
+                const newValue = currentValue + (Math.random() - 0.5) * 100;
+                pnl.textContent = `$${newValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                
+                // Update subscribers
+                const subscribers = document.getElementById('total-subscribers');
+                if (Math.random() < 0.1) { // 10% chance to add subscriber
+                    const current = parseInt(subscribers.textContent);
+                    subscribers.textContent = current + 1;
+                }
+                
+                // Update win rate
+                const winRate = document.getElementById('win-rate');
+                const currentRate = parseFloat(winRate.textContent.replace('%', ''));
+                const newRate = Math.max(75, Math.min(90, currentRate + (Math.random() - 0.5) * 2));
+                winRate.textContent = `${newRate.toFixed(1)}%`;
+            }, 2000);
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            populateStrategies();
+            simulateLiveTrading();
+            createPerformanceChart();
+            createRiskChart();
+            updateMetrics();
+            
+            // Add some initial trading signals
+            tradingSignals.forEach((signal, index) => {
+                setTimeout(() => addTradingSignal(signal), index * 500);
+            });
+        });
+    </script>
+</body>
+</html>

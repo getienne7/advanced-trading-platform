@@ -1,0 +1,50 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Trading Platform Services
+  - job_name: 'api-gateway'
+    static_configs:
+      - targets: ['api-gateway:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+
+  - job_name: 'trading-engine'
+    static_configs:
+      - targets: ['trading-engine:8001']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+
+  - job_name: 'market-data'
+    static_configs:
+      - targets: ['market-data:8002']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+
+  # Database monitoring
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+
+  - job_name: 'influxdb'
+    static_configs:
+      - targets: ['influxdb:8086']
+
+  # Message Queue
+  - job_name: 'rabbitmq'
+    static_configs:
+      - targets: ['rabbitmq:15692']
